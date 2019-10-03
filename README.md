@@ -1,4 +1,4 @@
-# MovieMa
+# MovieMan
 
 This is a movie and tv show review app which uses the themoviedb.org api 
 Here you will be able to find all latest tv shows and movies and also the app provides movieman review unit.
