@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/coordinator_layout"
     android:background="@color/purple"
     tools:context=".MainActivity">
 
@@ -17,7 +18,7 @@
         android:text="Sign Up"
         android:textColor="@color/theme_white"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -25,8 +26,8 @@
         android:id="@+id/login_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="-40dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="-40dp"
         app:cardBackgroundColor="@color/theme_white"
         app:cardCornerRadius="45dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -182,7 +183,7 @@
                     android:layout_marginLeft="30dp"
                     android:fontFamily="@font/poppins_medium"
                     android:text="Are you ready?"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="30dp"
                     android:textSize="23sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
