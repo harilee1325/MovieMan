@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.harilee.movieman.Config;
+import com.harilee.movieman.Login.LoginFragment;
 import com.harilee.movieman.Model.SignupModel;
 import com.harilee.movieman.R;
 import com.harilee.movieman.Utility;
@@ -139,6 +140,8 @@ public class SignupFragment extends Fragment implements SignupViewInterface {
         String success = signupResponse.getSuccess();
         if (success.equalsIgnoreCase("yes")){
             showToast(signupResponse.getMsg());
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame
+            , new LoginFragment(), "signup").addToBackStack(null).commitAllowingStateLoss();
 
         }else {
             displayError(signupResponse.getMsg());

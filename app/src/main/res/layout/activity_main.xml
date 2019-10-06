@@ -97,6 +97,7 @@
                 android:layout_marginRight="10dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
+                app:passwordToggleEnabled="true"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/inputLayout1">
@@ -107,6 +108,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:hint="password"
+                    android:inputType="textPassword"
                     android:textColor="@color/theme_black"
                     android:textColorHint="@color/purple"
                     android:textSize="17sp"

@@ -23,12 +23,30 @@ public class NetworkClient {
 
     public static Retrofit retrofit;
     public static String BASE_URL = "https://api-movie-man.herokuapp.com";
+    public static String TMDB_URL = "https://api.themoviedb.org/3/";
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static Retrofit getRetrofitMain() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(getUnsafeOkHttpClient().build())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+
+                    //   .client(new OkHttpClient())
+
+                    .build();
+        }
+        return retrofit;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static Retrofit getRetrofitTMBD() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(TMDB_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(getUnsafeOkHttpClient().build())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

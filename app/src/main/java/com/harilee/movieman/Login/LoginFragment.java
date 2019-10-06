@@ -1,6 +1,7 @@
 package com.harilee.movieman.Login;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.harilee.movieman.Config;
 import com.harilee.movieman.ForgotPassword.ForgotPasswotdFragment;
+import com.harilee.movieman.Home.HomeFragment;
 import com.harilee.movieman.Model.LoginModel;
 import com.harilee.movieman.R;
 import com.harilee.movieman.SignUp.SignupFragment;
@@ -103,16 +105,23 @@ public class LoginFragment extends Fragment implements LoginViewInterface {
             LoginPresenter loginPresenterData = new LoginPresenter(loginData);
             loginPresenterData.enterUsername(username);
             loginPresenterData.enterPassword(password);
-
+            showLoader(getContext(),true,dialog," ");
             //object that specifies the view interface
-            Utility.getUtilityInstance().showGifPopup(getContext(), true, dialog, "Checking user");
             loginPresenter.loginUser();
         }
     }
 
     @Override
     public void getLoginData(LoginModel loginModel) {
-        Utility.getUtilityInstance().setPreference(getContext(), Config.USERNAME, loginModel.getUsername());
+        if (loginModel != null) {
+            Utility.getUtilityInstance().setPreference(getContext(), Config.USERNAME, loginModel.getUsername());
+        }
+    }
+
+    @Override
+    public void showLoader(Context context, boolean b, Dialog dialog, String msg) {
+        Utility.getUtilityInstance().showGifPopup(context, b, dialog, msg);
+
     }
 
     @Override
@@ -124,16 +133,20 @@ public class LoginFragment extends Fragment implements LoginViewInterface {
 
     @Override
     public void getLoginResponse(LoginResponse loginResponse) {
-        Utility.getUtilityInstance().showGifPopup(getContext(), false, dialog, "Checking user");
+        showLoader(getContext(),false,dialog," ");
         showToast(loginResponse.getMsg());
-
+        if (loginResponse.getSuccess().equalsIgnoreCase("yes")) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame
+                    , new HomeFragment(), "login").addToBackStack(null).commitAllowingStateLoss();
+            Utility.getUtilityInstance().setPreference(getContext(), Config.ISLOGIN, "yes");
+        }
 
     }
 
 
     @Override
     public void displayError(String s) {
-        Utility.getUtilityInstance().showGifPopup(getContext(), false, dialog, "Checking user");
+        showLoader(getContext(),false,dialog," ");
         showToast(s);
     }
 }

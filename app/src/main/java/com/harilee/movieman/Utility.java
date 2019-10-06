@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.Objects;
@@ -61,6 +63,10 @@ public class Utility {
             }
 
         }
+    }
+
+    public void snackBar(String msg, View v) {
+        Snackbar.make(v, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
 }

@@ -26,6 +26,8 @@
     <color name="aqua">#00FFFF</color>
     <color name="purple_1">#B651E1</color>
     <color name="purple_2">#D396ED</color>
+    <color name="background">#dddddd</color>
+
 
 </resources>
 
