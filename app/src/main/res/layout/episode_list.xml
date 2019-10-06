@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:paddingBottom="@dimen/padding_10"
             android:scaleType="centerCrop"
-            android:src="@drawable/tv_poster_4"
             />
 
         <LinearLayout

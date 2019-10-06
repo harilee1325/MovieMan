@@ -8,4 +8,5 @@ public class Config {
     public static String TAG = "tag";
     public static String TV_ID = "tv id";
     public static String SEASON_NUM = "season num";
+    public static String SEARCH_TAG = "search";
 }

@@ -65,6 +65,16 @@ public interface NetworkInterface {
     // episode list
     @GET("tv/{tv_id}/season/{season_number}?language=en-US")
     Observable<SeasonResponse> getEpisodes(@Path("tv_id") String sid, @Path("season_number") String seasonNumber,@Query("api_key") String tmdbApiKey);
+
+    //search movie
+    @GET("search/movie?language=en-US&include_adult=true")
+    Observable<MovieResponse> searchMovie(@Query("api_key") String tmdbApiKey
+            , @Query("page") int pageNumber,@Query("query") String search);
+
+    //search tv show
+    @GET("search/tv?language=en-US")
+    Observable<com.harilee.movieman.MovieList.TvResponse> searchTv(@Query("api_key") String tmdbApiKey
+            , @Query("page") int pageNumber,@Query("query") String search);
 }
 
 
