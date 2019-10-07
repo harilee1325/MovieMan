@@ -50,7 +50,7 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.ViewHolder
         Glide.with(context).load("https://image.tmdb.org/t/p/w500/" + seasonModels.get(position).getPosterPath())
                 .into(holder.seasonPoster);
         Log.e(TAG, "onBindViewHolder: "+ seasonModels.get(position).getOverview());
-        holder.seasonNumber.setText(("Season "+(seasonModels.get(position).getSeasonNumber()+1)));
+        holder.seasonNumber.setText(("Season "+(seasonModels.get(position).getSeasonNumber())));
         holder.overview.setText("Episodes "+seasonModels.get(position).getEpisodeCount());
 
 

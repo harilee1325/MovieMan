@@ -1,17 +1,13 @@
 package com.harilee.movieman.MovieList;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,17 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.harilee.movieman.Config;
+import com.harilee.movieman.Filter.FilterDialog;
+import com.harilee.movieman.Filter.FilterFragment;
 import com.harilee.movieman.Home.HomeFragment;
 import com.harilee.movieman.Model.MovieModel;
 import com.harilee.movieman.Model.TvModel;
 import com.harilee.movieman.R;
 import com.harilee.movieman.Search.SearchFragment;
-import com.harilee.movieman.Seasons.SeasonFragment;
 import com.harilee.movieman.Utility;
 
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class MovieFragment extends Fragment implements MovieViewInterface {
+public class MovieFragment extends Fragment implements MovieViewInterface, FilterDialog.ButtonClicked {
 
 
     @BindView(R.id.filter_back)
@@ -56,6 +54,8 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
     FloatingActionButton search;
     @BindView(R.id.title_text)
     TextView titleText;
+    @BindView(R.id.filter)
+    FloatingActionButton filter;
     private ShimmerFrameLayout shimmerViewContainer;
     private View view;
     private List<MovieModel> movieModels = new ArrayList<>();
@@ -78,6 +78,8 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
 
     public void setView() {
         shimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+
+
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -99,7 +101,9 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
 
         //setting the recycler view
         list.setHasFixedSize(true);
-        movieAdapter = new MovieAdapter(getContext(), getActivity(), movieModels, tvModels, new MovieFragment(), tag);
+        movieAdapter = new MovieAdapter(new MovieFragment());
+
+        movieAdapter = new MovieAdapter(getContext(), getActivity(), movieModels, tvModels, tag);
         list.setAdapter(movieAdapter);
         callApi();
         dialog = new Dialog(getContext());
@@ -133,6 +137,12 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
         }
     }
 
+    public void clearList(){
+
+        tvModels.clear();
+        movieModels.clear();
+
+    }
     @Override
     public void displayError(String error) {
         shimmerViewContainer.stopShimmerAnimation();
@@ -166,7 +176,7 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
     }
 
 
-    @OnClick({R.id.filter_back, R.id.search})
+    @OnClick({R.id.filter_back, R.id.search, R.id.filter})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.filter_back:
@@ -176,15 +186,34 @@ public class MovieFragment extends Fragment implements MovieViewInterface {
             case R.id.search:
                 searchMethod();
                 break;
+            case R.id.filter:
+                Bundle bundle = new Bundle();
+                bundle.putString(Config.SEARCH_TAG, tag);
+                FilterDialog filterDialog = new FilterDialog();
+                filterDialog.setArguments(bundle);
+                filterDialog.show(getActivity().getSupportFragmentManager(), "list");
+
+                break;
         }
     }
 
     private void searchMethod() {
+        clearList();
         Bundle bundle = new Bundle();
         bundle.putString(Config.SEARCH_TAG, tag);
         SearchFragment seasonFragment = new SearchFragment();
         seasonFragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame
-        , seasonFragment, "home").addToBackStack("home").commitAllowingStateLoss();
+                , seasonFragment, "home").addToBackStack("home").commitAllowingStateLoss();
+    }
+
+    @Override
+    public void buttonClicked() {
+        Bundle bundle = new Bundle();
+        bundle.putString(Config.SEARCH_TAG, tag);
+        FilterFragment filterFragment = new FilterFragment();
+        filterFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame
+        , filterFragment, "list").addToBackStack("list").commitAllowingStateLoss();
     }
 }

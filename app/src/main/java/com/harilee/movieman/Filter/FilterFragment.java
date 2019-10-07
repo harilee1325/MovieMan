@@ -1,6 +1,5 @@
-package com.harilee.movieman.Search;
+package com.harilee.movieman.Filter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +21,7 @@ import com.harilee.movieman.Config;
 import com.harilee.movieman.Model.MovieModel;
 import com.harilee.movieman.Model.TvModel;
 import com.harilee.movieman.R;
+import com.harilee.movieman.Search.SearchAdapter;
 import com.harilee.movieman.Utility;
 
 import java.util.ArrayList;
@@ -33,7 +32,8 @@ import butterknife.ButterKnife;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class SearchFragment extends Fragment implements SearchViewInterface {
+public class FilterFragment extends Fragment implements FilterViewInterface {
+
 
     @BindView(R.id.filter_back)
     ImageView filterBack;
@@ -41,14 +41,17 @@ public class SearchFragment extends Fragment implements SearchViewInterface {
     EditText searchEt;
     @BindView(R.id.list)
     RecyclerView list;
+    @BindView(R.id.filter_title)
+    TextView filterTitle;
     @BindView(R.id.shimmer_view_container)
     ShimmerFrameLayout shimmerViewContainer;
     private View view;
+    private FilterPresenter filterPresenter;
     private String tag;
-    private SearchPresenter searchPresenter;
+    private SearchAdapter searchAdapter;
     private List<MovieModel> movieModels = new ArrayList<>();
     private List<TvModel> tvModels = new ArrayList<>();
-    private SearchAdapter searchAdapter;
+
 
     @Nullable
     @Override
@@ -63,48 +66,16 @@ public class SearchFragment extends Fragment implements SearchViewInterface {
     public void setView() {
 
         tag = getArguments().getString(Config.SEARCH_TAG);
+        searchEt.setVisibility(View.GONE);
+        filterTitle.setVisibility(View.VISIBLE);
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(getResources().getColor(R.color.purple));
+
         searchAdapter = new SearchAdapter(getContext(), getActivity(), movieModels, tvModels, tag);
         list.setHasFixedSize(true);
         list.setAdapter(searchAdapter);
-        searchEt.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-        searchEt.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                Log.e(TAG, "setView: " + "here 1");
-                shimmerViewContainer.setVisibility(View.VISIBLE);
-                shimmerViewContainer.startShimmerAnimation();
-                if (tag.equalsIgnoreCase("movie")) {
-                    Log.e(TAG, "setView: " + "here 2");
-                    String query = searchEt.getText().toString().trim();
-                    if (query.isEmpty()) {
-                        searchEt.setError("Search something");
-                    } else {
-                        Log.e(TAG, "setView: " + "here 3");
-                        searchPresenter.getSearchText(query);
-                        this.movieModels.clear();
-                        searchPresenter.getMovieSearch();
-                    }
-
-                } else {
-                    String query = searchEt.getText().toString().trim();
-                    if (query.isEmpty()) {
-                        searchEt.setError("Search something");
-                    } else {
-                        searchPresenter.getSearchText(query);
-                        this.tvModels.clear();
-                        searchPresenter.getTvSearch();
-                    }
-                }
-            }
-            return false;
-        });
-
 
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -113,49 +84,56 @@ public class SearchFragment extends Fragment implements SearchViewInterface {
 
                 if (!recyclerView.canScrollVertically(1)) {
                     displayError("Loading.....");
-                    searchPresenter.getPageNumber(tag);
+                    filterPresenter.getPageNumber(tag);
                 }
             }
         });
-    }
 
-    @Override
-    public void callApi() {
-        searchPresenter = new SearchPresenter(this);
-    }
 
-    @Override
-    public void getTvList(List<TvModel> tvResponse) {
-        shimmerViewContainer.setVisibility(View.VISIBLE);
-        shimmerViewContainer.startShimmerAnimation();
-        if (tvResponse != null) {
 
-            Log.e(TAG, "getMovieList: " + tvResponse.size());
-            this.tvModels.addAll(tvResponse);
-            searchAdapter.notifyDataSetChanged();
-        } else {
-            displayError("Could not get the Tv shows please check your internet connection and try again");
-        }
     }
 
     @Override
     public void displayError(String error) {
-        shimmerViewContainer.setVisibility(View.VISIBLE);
+        shimmerViewContainer.setVisibility(View.GONE);
         shimmerViewContainer.startShimmerAnimation();
         Utility.getUtilityInstance().snackBar(error, view);
     }
 
     @Override
     public void getMovieList(List<MovieModel> movieResponse) {
-        shimmerViewContainer.setVisibility(View.VISIBLE);
+        shimmerViewContainer.setVisibility(View.GONE);
         shimmerViewContainer.startShimmerAnimation();
-        if (movieResponse != null) {
+        if (movieResponse.size() > 0) {
             Log.e(TAG, "getMovieList: " + movieResponse.size());
             this.movieModels.addAll(movieResponse);
             searchAdapter.notifyDataSetChanged();
-        } else {
-            displayError("Could not get the Tv shows please check your internet connection and try again");
         }
+    }
+
+
+    @Override
+    public void callApi() {
+        filterPresenter = new FilterPresenter(this, getContext());
+        filterPresenter.getFilterType(tag);
+        shimmerViewContainer.setVisibility(View.VISIBLE);
+        shimmerViewContainer.startShimmerAnimation();
+        if (tag.equalsIgnoreCase("movie")) {
+            filterPresenter.getFilteredData();
+        } else {
+            filterPresenter.getTvFilterData();
+        }
+    }
+
+    @Override
+    public void getTvList(List<TvModel> tvResponse) {
+        shimmerViewContainer.setVisibility(View.GONE);
+        shimmerViewContainer.startShimmerAnimation();
+        if (tvResponse.size() > 0) {
+            this.tvModels.addAll(tvResponse);
+            searchAdapter.notifyDataSetChanged();
+        }
+
     }
 
 

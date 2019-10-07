@@ -84,10 +84,10 @@ public class MoviePresenter implements MoviePresenterInterface {
 
     public Observable<com.harilee.movieman.MovieList.TvResponse> getTvObservable() {
 
-        Calendar cal = Calendar.getInstance();
-        String maxReleaseDate = dateFormat.format(cal.getTime());
+       // Calendar cal = Calendar.getInstance();
+       // String maxReleaseDate = dateFormat.format(cal.getTime());
         return NetworkClient.getRetrofitTMBD().create(NetworkInterface.class)
-                .newTvshow(Config.TMDB_API_KEY, maxReleaseDate, 50, pageNumber)
+                .tvNew(Config.TMDB_API_KEY, 50, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 

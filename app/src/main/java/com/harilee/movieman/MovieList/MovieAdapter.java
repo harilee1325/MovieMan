@@ -24,6 +24,7 @@ import com.harilee.movieman.Model.MovieModel;
 import com.harilee.movieman.Model.TvModel;
 import com.harilee.movieman.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -32,18 +33,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private FragmentActivity activity;
     private Context context;
-    private List<MovieModel> movieModels;
-    private MovieFragment movieFragment;
+    private List<MovieModel> movieModels = new ArrayList<>();
     private String tag;
-    private List<TvModel> tvModels;
+    private MovieFragment movieFragment;
+    private List<TvModel> tvModels = new ArrayList<>();
 
-    public MovieAdapter(Context context, FragmentActivity activity, List<MovieModel> movieModels, List<TvModel> tvModels, MovieFragment movieFragment, String tag) {
+    public MovieAdapter(Context context, FragmentActivity activity, List<MovieModel> movieModels, List<TvModel> tvModels, String tag) {
         this.activity = activity;
         this.context = context;
         this.movieModels = movieModels;
-        this.movieFragment = movieFragment;
         this.tag = tag;
         this.tvModels = tvModels;
+    }
+
+    public MovieAdapter(MovieFragment movieFragment) {
+        this.movieFragment = movieFragment;
     }
 
     @NonNull
@@ -61,6 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     .getPosterPath()).into(holder.posterImage);
             holder.posterImage.setOnClickListener(v -> {
 
+               // movieFragment.clearList();
                 String movieId = String.valueOf(movieModels.get(position).getId());
                 Bundle bundle = new Bundle();
                 bundle.putString(Config.MOVIE_ID, movieId);
@@ -74,6 +79,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             Glide.with(context).load("https://image.tmdb.org/t/p/w500/" + tvModels.get(position)
                     .getPosterPath()).into(holder.posterImage);
             holder.posterImage.setOnClickListener(v -> {
+               // movieFragment.clearList();
                 Log.e(TAG, "onBindViewHolder: "+"tv"+tvModels.get(position).getId() );
                 String movieId = String.valueOf(tvModels.get(position).getId());
                 Bundle bundle = new Bundle();

@@ -75,6 +75,24 @@ public interface NetworkInterface {
     @GET("search/tv?language=en-US")
     Observable<com.harilee.movieman.MovieList.TvResponse> searchTv(@Query("api_key") String tmdbApiKey
             , @Query("page") int pageNumber,@Query("query") String search);
+
+    @GET("discover/movie?language=en-US&sort_by=popularity.desc")
+    Observable<MovieResponse> moviePopular(@Query("api_key") String tmdbApiKey,@Query("page") int pageNumber);
+
+    @GET("discover/movie?vote_count.gte=500&language=en-US&sort_by=vote_average.desc")
+    Observable<MovieResponse> movieHighestPaid(@Query("api_key") String tmdbApiKey,@Query("page") int pageNumber);
+
+
+    @GET("discover/tv?language=en-US&sort_by=popularity.desc")
+    Observable<com.harilee.movieman.MovieList.TvResponse> tvPopular(@Query("api_key") String tmdbApiKey
+            , @Query("vote_count.gte") int i, @Query("page") int pageNumber);
+
+    @GET("discover/tv?language=en-US&sort_by=first_air_date.desc")
+    Observable<com.harilee.movieman.MovieList.TvResponse> tvNew(@Query("api_key") String tmdbApiKey
+            , @Query("vote_count.gte") int i, @Query("page") int pageNumber);
+
+    @GET("discover/tv?language=en-US&sort_by=vote_average.desc&vote_count.gte=500")
+    Observable<com.harilee.movieman.MovieList.TvResponse> tvRated(String tmdbApiKey, int pageNumber);
 }
 
 

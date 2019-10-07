@@ -10,8 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.harilee.movieman.Config;
 import com.harilee.movieman.MovieList.MovieFragment;
 import com.harilee.movieman.R;
+import com.harilee.movieman.Utility;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -42,6 +45,11 @@ public class HomeFragment extends Fragment {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(getResources().getColor(R.color.purple));
+
+        Utility.getUtilityInstance().setPreference(getContext(), Config.MOST_POPULAR, "no");
+        Utility.getUtilityInstance().setPreference(getContext(), Config.HIGHEST_PAID, "no");
+        Utility.getUtilityInstance().setPreference(getContext(), Config.NEWEST, "no");
+
 
     }
 

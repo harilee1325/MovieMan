@@ -9,4 +9,7 @@ public class Config {
     public static String TV_ID = "tv id";
     public static String SEASON_NUM = "season num";
     public static String SEARCH_TAG = "search";
+    public static String MOST_POPULAR = "most popular";
+    public static String HIGHEST_PAID = "highest paid";
+    public static String NEWEST = "newest";
 }
